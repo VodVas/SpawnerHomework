@@ -1,0 +1,41 @@
+using System.Collections;
+using System.Collections.Generic;
+using UnityEngine;
+
+public class Spawner : MonoBehaviour
+{
+    [SerializeField] private List<GameObject> _spawnPoints;
+    [SerializeField] private Enemy _enemy;
+
+    private void Start()
+    {
+        StartCoroutine(SpawnEnemy(2f));
+    }
+
+    private IEnumerator SpawnEnemy(float delayBetweenSpawn)
+    {
+        var wait = new WaitForSeconds(delayBetweenSpawn);
+
+        while (true)
+        {
+            Enemy enemy = Instantiate(_enemy, GetRandomPoint().transform.position, Quaternion.identity);
+
+            enemy.TakeDirection(GetRandomDirection());
+
+            yield return wait;
+        }
+    }
+
+    private Vector3 GetRandomDirection()
+    {
+        float randomNumberX = Random.Range(-1f, 1f);
+        float randomNumberZ = Random.Range(-1f, 1f);
+
+        return new Vector3(randomNumberX, 0, randomNumberZ);
+    }
+
+    private GameObject GetRandomPoint()
+    {
+        return _spawnPoints[Random.Range(0, _spawnPoints.Count)];
+    }
+}
